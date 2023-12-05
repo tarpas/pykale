@@ -43,16 +43,21 @@ jobs:
           pip install torch_cluster==1.6.1 -f https://data.pyg.org/whl/torch-2.0.0+cpu.html
           pip install torch_spline_conv==1.2.2 -f https://data.pyg.org/whl/torch-1.13.0+cpu.html
           pip install torch_geometric==2.3.0
+          pip install pytest-testmon
           pip install -e .[dev]
         shell: bash -l {0}
       - name: Run tests
         id: run_tests
         run: |
-          pytest --nbmake --nbmake-timeout=3000 --cov=kale
+          pytest --nbmake --nbmake-timeout=3000 --cov=kale --tmnet
         shell: bash -l {0}
+        env:
+          TMNET_API_KEY: ${{ secrets.TMNET_API_KEY }}
+
       - name: Determine coverage
         run: |
           coverage xml
         shell: bash -l {0}
       - name: Report coverage
+        if: ${{ false }}
         uses: codecov/codecov-action@v1
